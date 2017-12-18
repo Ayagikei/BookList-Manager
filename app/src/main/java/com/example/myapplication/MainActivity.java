@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String EXTRA_MESSAGE = "com.example.MyApplication.MESSAGE";
-    private ViewGroup mContainerView;
     private TextView contentText;
+    private RecyclerView recyclerView;
 
 
     @Override
@@ -99,10 +99,10 @@ public class MainActivity extends AppCompatActivity
 
         List<Book> booklist = DataSupport.findAll(Book.class);
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        BookAdapter bookAdapter = new BookAdapter(booklist);
+        BookAdapter bookAdapter = new BookAdapter(booklist,this);
         recyclerView.setAdapter(bookAdapter);
 
     }
@@ -111,19 +111,11 @@ public class MainActivity extends AppCompatActivity
     public void onNewIntent(Intent newIntent) {
         super.onNewIntent(newIntent);
 
-//        //刷新书单
-//        mContainerView.removeAllViews();
-//        List<Book> books = DataSupport.findAll(Book.class);
-//
-//        for (Book book : books) {
-//            //item增加
-//            final ViewGroup newView = (ViewGroup) LayoutInflater.from(this).inflate(
-//                    R.layout.list_item_example, mContainerView, false);
-//
-//            ((TextView) newView.findViewById(R.id.titleText)).setText(book.getTitle());
-//            ((TextView) newView.findViewById(R.id.contentText)).setText(book.getContent());
-//            mContainerView.addView(newView, 0);
-//        }
+        //刷新书单
+        List<Book> booklist = DataSupport.findAll(Book.class);
+        BookAdapter bookAdapter = new BookAdapter(booklist,this);
+        recyclerView.setAdapter(bookAdapter);
+
     }
 
     @Override
@@ -187,42 +179,42 @@ public class MainActivity extends AppCompatActivity
     /**
      * 点击Send按钮时的事件响应 Called when the user taps the Send button
      */
-    public void sendMessage(View view) {
-
-        EditText editText = (EditText) findViewById(R.id.editText2);
-
-        //实例化一个子View
-        final ViewGroup newView = (ViewGroup) LayoutInflater.from(this).inflate(
-                R.layout.list_item_example, mContainerView, false);
-
-        ((TextView) newView.findViewById(android.R.id.text1)).setText(
-                editText.getText());
-
-
-        //设置删除按钮的监听
-        newView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mContainerView.removeView(newView);
-
-                // If there are no rows remaining, show the empty view.
-                if (mContainerView.getChildCount() == 0) {
-                    findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
-                }
-
-            }
-        });
-        //添加子View
-        mContainerView.addView(newView, 0);
-        findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
-
-        // Do something in response to button
-//        Intent intent = new Intent(this, DisplayMessageActivity.class);
+//    public void sendMessage(View view) {
+//
 //        EditText editText = (EditText) findViewById(R.id.editText2);
-//        String message = editText.getText().toString();
-//        intent.putExtra(EXTRA_MESSAGE, message);
-//        startActivity(intent);
-    }
+//
+//        //实例化一个子View
+//        final ViewGroup newView = (ViewGroup) LayoutInflater.from(this).inflate(
+//                R.layout.list_item_example, mContainerView, false);
+//
+//        ((TextView) newView.findViewById(android.R.id.text1)).setText(
+//                editText.getText());
+//
+//
+//        //设置删除按钮的监听
+//        newView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mContainerView.removeView(newView);
+//
+//                // If there are no rows remaining, show the empty view.
+//                if (mContainerView.getChildCount() == 0) {
+//                    findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
+//                }
+//
+//            }
+//        });
+//        //添加子View
+//        mContainerView.addView(newView, 0);
+//        findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
+//
+//        // Do something in response to button
+////        Intent intent = new Intent(this, DisplayMessageActivity.class);
+////        EditText editText = (EditText) findViewById(R.id.editText2);
+////        String message = editText.getText().toString();
+////        intent.putExtra(EXTRA_MESSAGE, message);
+////        startActivity(intent);
+//    }
 
 
     public void openNewView(View view) {

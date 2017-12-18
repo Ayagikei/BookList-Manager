@@ -1,5 +1,10 @@
 package com.example.myapplication;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
+import android.content.Context;
+import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,19 +19,23 @@ import java.util.List;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     private List<Book> mBookList;
+    Context mContext;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
         TextView contentTextView;
+        ConstraintLayout container;
 
         public ViewHolder(View view){
             super(view);
             titleTextView = (TextView) view.findViewById(R.id.titleText);
             contentTextView = (TextView) view.findViewById(R.id.contentText);
+            container = (ConstraintLayout) view.findViewById(R.id.itemLayout);
         }
     }
 
-    public BookAdapter(List<Book> bookList){
+    public BookAdapter(List<Book> bookList,Context context){
+        mContext = context;
         mBookList = bookList;
     }
 
@@ -43,6 +52,14 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         Book book = mBookList.get(position);
         holder.titleTextView.setText(book.getTitle());
         holder.contentTextView.setText(book.getContent());
+
+        holder.container.setOnClickListener(view -> {
+         TextView contentTextView = ((ViewGroup) view).findViewById(R.id.contentText);
+        Intent intent = new Intent(view.getContext(), ScrollingActivity.class);
+        ActivityOptions option = ActivityOptions
+                .makeSceneTransitionAnimation((Activity) view.getContext(), contentTextView, "share_text");
+            view.getContext().startActivity(intent, option.toBundle());
+        });
     }
 
     @Override
