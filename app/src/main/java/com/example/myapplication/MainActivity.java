@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,40 +62,48 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mContainerView = (ViewGroup) findViewById(R.id.lineLayout);
+//        mContainerView = (ViewGroup) findViewById(R.id.lineLayout);
+//
+//        if (mContainerView == null) {
+//            Log.w("WTF", "This is Warnning.");
+//        } else {
+//            Log.w("WTF", "not null");
+//
+//            //未来以下部分可改用ListView重写
+//            List<Book> books = DataSupport.findAll(Book.class);
+//
+//            for (Book book : books) {
+//
+//                //item增加
+//               ViewGroup newView = (ViewGroup) LayoutInflater.from(this).inflate(
+//                        R.layout.list_item_example, mContainerView, false);
+//
+//
+//
+//                ((TextView) newView.findViewById(R.id.titleText)).setText(book.getTitle());
+//                ((TextView) newView.findViewById(R.id.contentText)).setText(book.getContent());
+//
+//                newView.findViewById(R.id.itemLayout).setOnClickListener((v)-> {
+//                    contentText = ((ViewGroup) v).findViewById(R.id.contentText);
+//                    Intent intent = new Intent(this, ScrollingActivity.class);
+//                    ActivityOptions option = ActivityOptions
+//                            .makeSceneTransitionAnimation(this, contentText, "share_text");
+//                    startActivity(intent, option.toBundle());
+//                });
+//
+//                mContainerView.addView(newView, 0);
+//            }
+//
+//            findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
+//        }
 
-        if (mContainerView == null) {
-            Log.w("WTF", "This is Warnning.");
-        } else {
-            Log.w("WTF", "not null");
+        List<Book> booklist = DataSupport.findAll(Book.class);
 
-            //未来以下部分可改用ListView重写
-            List<Book> books = DataSupport.findAll(Book.class);
-
-            for (Book book : books) {
-
-                //item增加
-               ViewGroup newView = (ViewGroup) LayoutInflater.from(this).inflate(
-                        R.layout.list_item_example, mContainerView, false);
-
-
-
-                ((TextView) newView.findViewById(R.id.titleText)).setText(book.getTitle());
-                ((TextView) newView.findViewById(R.id.contentText)).setText(book.getContent());
-
-                newView.findViewById(R.id.itemLayout).setOnClickListener((v)-> {
-                    contentText = ((ViewGroup) v).findViewById(R.id.contentText);
-                    Intent intent = new Intent(this, ScrollingActivity.class);
-                    ActivityOptions option = ActivityOptions
-                            .makeSceneTransitionAnimation(this, contentText, "share_text");
-                    startActivity(intent, option.toBundle());
-                });
-
-                mContainerView.addView(newView, 0);
-            }
-
-            findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
-        }
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        BookAdapter bookAdapter = new BookAdapter(booklist);
+        recyclerView.setAdapter(bookAdapter);
 
     }
 
@@ -101,19 +111,19 @@ public class MainActivity extends AppCompatActivity
     public void onNewIntent(Intent newIntent) {
         super.onNewIntent(newIntent);
 
-        //刷新书单
-        mContainerView.removeAllViews();
-        List<Book> books = DataSupport.findAll(Book.class);
-
-        for (Book book : books) {
-            //item增加
-            final ViewGroup newView = (ViewGroup) LayoutInflater.from(this).inflate(
-                    R.layout.list_item_example, mContainerView, false);
-
-            ((TextView) newView.findViewById(R.id.titleText)).setText(book.getTitle());
-            ((TextView) newView.findViewById(R.id.contentText)).setText(book.getContent());
-            mContainerView.addView(newView, 0);
-        }
+//        //刷新书单
+//        mContainerView.removeAllViews();
+//        List<Book> books = DataSupport.findAll(Book.class);
+//
+//        for (Book book : books) {
+//            //item增加
+//            final ViewGroup newView = (ViewGroup) LayoutInflater.from(this).inflate(
+//                    R.layout.list_item_example, mContainerView, false);
+//
+//            ((TextView) newView.findViewById(R.id.titleText)).setText(book.getTitle());
+//            ((TextView) newView.findViewById(R.id.contentText)).setText(book.getContent());
+//            mContainerView.addView(newView, 0);
+//        }
     }
 
     @Override

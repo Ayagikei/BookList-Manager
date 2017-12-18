@@ -10,8 +10,8 @@
     tools:layout_editor_absoluteY="81dp"
     tools:showIn="@layout/app_bar_main">
 
-    <ScrollView
-        android:id="@+id/scrollView3"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"
@@ -28,20 +28,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button2">
 
-        <LinearLayout
-            android:id="@+id/lineLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:orientation="vertical"
-            android:padding="0dp"
-            android:paddingBottom="0dp"
-            android:paddingEnd="0dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
-            android:paddingStart="0dp"
-            android:paddingTop="0dp"></LinearLayout>
-    </ScrollView>
+    </android.support.v7.widget.RecyclerView>
 
     <EditText
         android:id="@+id/editText2"
