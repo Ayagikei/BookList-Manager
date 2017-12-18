@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity
 
     public static final String EXTRA_MESSAGE = "com.example.MyApplication.MESSAGE";
     private ViewGroup mContainerView;
-    private TextView textView2;
+    private TextView contentText;
 
 
     @Override
@@ -67,16 +67,28 @@ public class MainActivity extends AppCompatActivity
         } else {
             Log.w("WTF", "not null");
 
-
+            //未来以下部分可改用ListView重写
             List<Book> books = DataSupport.findAll(Book.class);
 
             for (Book book : books) {
+
                 //item增加
-                final ViewGroup newView = (ViewGroup) LayoutInflater.from(this).inflate(
+               ViewGroup newView = (ViewGroup) LayoutInflater.from(this).inflate(
                         R.layout.list_item_example, mContainerView, false);
 
-                ((TextView) newView.findViewById(R.id.textView)).setText(book.getTitle());
-                ((TextView) newView.findViewById(R.id.textView2)).setText(book.getContent());
+
+
+                ((TextView) newView.findViewById(R.id.titleText)).setText(book.getTitle());
+                ((TextView) newView.findViewById(R.id.contentText)).setText(book.getContent());
+
+                newView.findViewById(R.id.itemLayout).setOnClickListener((v)-> {
+                    contentText = ((ViewGroup) v).findViewById(R.id.contentText);
+                    Intent intent = new Intent(this, ScrollingActivity.class);
+                    ActivityOptions option = ActivityOptions
+                            .makeSceneTransitionAnimation(this, contentText, "share_text");
+                    startActivity(intent, option.toBundle());
+                });
+
                 mContainerView.addView(newView, 0);
             }
 
@@ -98,8 +110,8 @@ public class MainActivity extends AppCompatActivity
             final ViewGroup newView = (ViewGroup) LayoutInflater.from(this).inflate(
                     R.layout.list_item_example, mContainerView, false);
 
-            ((TextView) newView.findViewById(R.id.textView)).setText(book.getTitle());
-            ((TextView) newView.findViewById(R.id.textView2)).setText(book.getContent());
+            ((TextView) newView.findViewById(R.id.titleText)).setText(book.getTitle());
+            ((TextView) newView.findViewById(R.id.contentText)).setText(book.getContent());
             mContainerView.addView(newView, 0);
         }
     }
@@ -204,13 +216,11 @@ public class MainActivity extends AppCompatActivity
 
 
     public void openNewView(View view) {
-        textView2 = ((ViewGroup) view).findViewById(R.id.textView2);
-        Intent intent = new Intent(this, ScrollingActivity.class);
-        ActivityOptions option = ActivityOptions
-                .makeSceneTransitionAnimation(this, textView2, "share_text");
-        startActivity(intent, option.toBundle());
-        Connector.getDatabase();
-
+//        textView2 = ((ViewGroup) view).findViewById(R.id.textView2);
+//        Intent intent = new Intent(this, ScrollingActivity.class);
+//        ActivityOptions option = ActivityOptions
+//                .makeSceneTransitionAnimation(this, textView2, "share_text");
+//        startActivity(intent, option.toBundle());
     }
 
     public void openAddBookView(View view) {

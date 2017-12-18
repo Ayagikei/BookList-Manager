@@ -7,7 +7,7 @@
     tools:context="com.example.myapplication.DisplayMessageActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/titleText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
