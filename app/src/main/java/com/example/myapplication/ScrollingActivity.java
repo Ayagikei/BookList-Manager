@@ -25,6 +25,8 @@ public class ScrollingActivity extends AppCompatActivity {
         Book book = (Book) intent.getSerializableExtra("book");
         TextView mContent = (TextView)findViewById(R.id.displayContent);
         mContent.setText(book.getContent());
+        TextView mAuthor = (TextView)findViewById(R.id.authorText);
+        mAuthor.setText(book.getAuthor());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(book.getTitle());
