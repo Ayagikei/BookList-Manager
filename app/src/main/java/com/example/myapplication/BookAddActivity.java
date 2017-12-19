@@ -31,8 +31,11 @@ public class BookAddActivity extends AppCompatActivity {
 
 
         int bookid = intent.getIntExtra("book",-1);
-        List<Book> books = DataSupport.select("title","author","content").where("id = ?",String.valueOf(bookid)).find(Book.class);
-        book = books.get(0);
+
+        if (bookid != -1) {
+            List<Book> books = DataSupport.select("title","author","content").where("id = ?",String.valueOf(bookid)).find(Book.class);
+            book = books.get(0);
+        }
 
         if(book != null ) {
             EditText bookTitle = (EditText) findViewById(R.id.bookTitle);
@@ -87,5 +90,11 @@ public class BookAddActivity extends AppCompatActivity {
         finish();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, ScrollingActivity.class);
+        intent.putExtra("book",book.getId());
+        startActivity(intent);
+    }
 }

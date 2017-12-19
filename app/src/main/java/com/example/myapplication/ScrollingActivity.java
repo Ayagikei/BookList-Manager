@@ -58,7 +58,10 @@ public class ScrollingActivity extends AppCompatActivity {
         super.onNewIntent(newIntent);
 
         //刷新内容
-
+        //获取传递过来的book对象
+        Intent intent = getIntent();
+//        book = (Book) intent.getSerializableExtra("book");
+        bookid = intent.getIntExtra("book",-1);
         List<Book> books = DataSupport.select("title","author","content").where("id = ?",String.valueOf(bookid)).find(Book.class);
         book = books.get(0);
         TextView mContent = (TextView)findViewById(R.id.displayContent);
@@ -68,6 +71,12 @@ public class ScrollingActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(book.getTitle());
+        this.setSupportActionBar(null);
 
     }
+
+
+
+
+
 }
