@@ -16,6 +16,7 @@ import java.util.List;
 public class ScrollingActivity extends AppCompatActivity {
 
     private Book book;
+    private int bookid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +25,10 @@ public class ScrollingActivity extends AppCompatActivity {
 
         //获取传递过来的book对象
         Intent intent = getIntent();
-        book = (Book) intent.getSerializableExtra("book");
+//        book = (Book) intent.getSerializableExtra("book");
+        bookid = intent.getIntExtra("book",-1);
+        List<Book> books = DataSupport.select("title","author","content").where("id = ?",String.valueOf(bookid)).find(Book.class);
+        book = books.get(0);
         TextView mContent = (TextView)findViewById(R.id.displayContent);
         mContent.setText(book.getContent());
         TextView mAuthor = (TextView)findViewById(R.id.authorText);
@@ -39,12 +43,31 @@ public class ScrollingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), BookAddActivity.class);
-                intent.putExtra("book",book);
+                intent.putExtra("book",book.getId());
                 view.getContext().startActivity(intent);
+                finish();
             }
         });
 
 
+
+    }
+
+    @Override
+    public void onNewIntent(Intent newIntent) {
+        super.onNewIntent(newIntent);
+
+        //刷新内容
+
+        List<Book> books = DataSupport.select("title","author","content").where("id = ?",String.valueOf(bookid)).find(Book.class);
+        book = books.get(0);
+        TextView mContent = (TextView)findViewById(R.id.displayContent);
+        mContent.setText(book.getContent());
+        TextView mAuthor = (TextView)findViewById(R.id.authorText);
+        mAuthor.setText(book.getAuthor());
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(book.getTitle());
 
     }
 }

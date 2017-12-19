@@ -126,6 +126,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        //刷新书单
+        List<Book> booklist = DataSupport.findAll(Book.class);
+        BookAdapter bookAdapter = new BookAdapter(booklist,this);
+        recyclerView.setAdapter(bookAdapter);
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {

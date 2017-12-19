@@ -56,7 +56,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         holder.container.setOnClickListener(view -> {
             TextView contentTextView = ((ViewGroup) view).findViewById(R.id.contentText);
             Intent intent = new Intent(view.getContext(), ScrollingActivity.class);
-            intent.putExtra("book",book);
+            intent.putExtra("book",book.getId());
             ActivityOptions option = ActivityOptions
                 .makeSceneTransitionAnimation((Activity) view.getContext(), contentTextView, "share_text");
             view.getContext().startActivity(intent, option.toBundle());

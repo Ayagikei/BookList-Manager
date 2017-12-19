@@ -5,9 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.litepal.crud.DataSupport;
+
+import java.util.List;
 
 public class BookAddActivity extends AppCompatActivity {
 
@@ -25,11 +30,16 @@ public class BookAddActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
 
-        book = (Book) intent.getSerializableExtra("book");
+        int bookid = intent.getIntExtra("book",-1);
+        List<Book> books = DataSupport.select("title","author","content").where("id = ?",String.valueOf(bookid)).find(Book.class);
+        book = books.get(0);
+
         if(book != null ) {
             EditText bookTitle = (EditText) findViewById(R.id.bookTitle);
             EditText bookAuthor = (EditText) findViewById(R.id.author);
             EditText bookContent = (EditText) findViewById(R.id.content);
+            Button button = (Button)findViewById(R.id.book_add_or_edit_button) ;
+            button.setText("编辑");
             bookTitle.setText(book.getTitle());
             bookAuthor.setText(book.getAuthor());
             bookContent.setText(book.getContent());
@@ -70,10 +80,12 @@ public class BookAddActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "成功编辑书籍",
                     Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, ScrollingActivity.class);
-            intent.putExtra("book",book);
+            intent.putExtra("book",book.getId());
             startActivity(intent);
         }
 
         finish();
     }
+
+
 }
