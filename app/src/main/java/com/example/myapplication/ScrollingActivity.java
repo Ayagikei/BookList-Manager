@@ -19,7 +19,15 @@ public class ScrollingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
+
+        //获取传递过来的book对象
+        Intent intent = getIntent();
+        Book book = (Book) intent.getSerializableExtra("book");
+        TextView mContent = (TextView)findViewById(R.id.displayContent);
+        mContent.setText(book.getContent());
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(book.getTitle());
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -38,15 +46,7 @@ public class ScrollingActivity extends AppCompatActivity {
             }
         });
 
-        Intent intent = getIntent();
-        Book book = (Book) intent.getSerializableExtra("book");
 
-
-
-       TextView mContent = (TextView)findViewById(R.id.displayContent);
-
-       toolbar.setTitle(book.getTitle());
-       mContent.setText(book.getContent());
 
     }
 }
