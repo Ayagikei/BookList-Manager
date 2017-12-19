@@ -14,6 +14,7 @@ public class BookAddActivity extends AppCompatActivity {
     private String s_title = null;
     private String s_author = null;
     private String s_content = null;
+    private Book book = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +25,7 @@ public class BookAddActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
 
-            Book book = (Book) intent.getSerializableExtra("book");
+        book = (Book) intent.getSerializableExtra("book");
         if(book != null ) {
             EditText bookTitle = (EditText) findViewById(R.id.bookTitle);
             EditText bookAuthor = (EditText) findViewById(R.id.author);
@@ -38,6 +39,8 @@ public class BookAddActivity extends AppCompatActivity {
     }
 
     public void addBook(View view){
+
+        boolean isNewBook = false;
         EditText bookTitle = (EditText) findViewById(R.id.bookTitle);
         EditText bookAuthor = (EditText) findViewById(R.id.author);
         EditText bookContent = (EditText) findViewById(R.id.content);
@@ -46,17 +49,30 @@ public class BookAddActivity extends AppCompatActivity {
         s_author = bookAuthor.getText().toString();
         s_content = bookContent.getText().toString();
 
-        Book book = new Book();
+        //新增or修改的差分
+        if(book == null){
+        book = new Book();
+        isNewBook = true;
+        }
+
         book.setTitle(s_title);
         book.setAuthor(s_author);
         book.setContent(s_content);
         book.save();
 
-        Toast.makeText(getApplicationContext(), "成功添加书籍",
-                Toast.LENGTH_SHORT).show();
-
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        if(isNewBook) {
+            Toast.makeText(getApplicationContext(), "成功添加书籍",
+                    Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+        else    {
+            Toast.makeText(getApplicationContext(), "成功编辑书籍",
+                    Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, ScrollingActivity.class);
+            intent.putExtra("book",book);
+            startActivity(intent);
+        }
 
         finish();
     }
