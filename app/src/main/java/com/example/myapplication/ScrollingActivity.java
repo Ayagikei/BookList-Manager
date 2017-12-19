@@ -15,6 +15,8 @@ import java.util.List;
 
 public class ScrollingActivity extends AppCompatActivity {
 
+    private Book book;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +24,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
         //获取传递过来的book对象
         Intent intent = getIntent();
-        Book book = (Book) intent.getSerializableExtra("book");
+        book = (Book) intent.getSerializableExtra("book");
         TextView mContent = (TextView)findViewById(R.id.displayContent);
         mContent.setText(book.getContent());
         TextView mAuthor = (TextView)findViewById(R.id.authorText);
@@ -36,15 +38,9 @@ public class ScrollingActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Book> books = DataSupport.findAll(Book.class);
-                String str =null ;
-                for(Book book:books){
-                    str = book.getTitle();
-                }
-
-
-                Snackbar.make(view, str, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(view.getContext(), BookAddActivity.class);
+                intent.putExtra("book",book);
+                view.getContext().startActivity(intent);
             }
         });
 

@@ -3,8 +3,10 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class BookAddActivity extends AppCompatActivity {
@@ -17,6 +19,20 @@ public class BookAddActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_add);
+
+        //编辑的时候获取传递过来的book对象
+        Intent intent = getIntent();
+
+
+            Book book = (Book) intent.getSerializableExtra("book");
+        if(book != null ) {
+            EditText bookTitle = (EditText) findViewById(R.id.bookTitle);
+            EditText bookAuthor = (EditText) findViewById(R.id.author);
+            EditText bookContent = (EditText) findViewById(R.id.content);
+            bookTitle.setText(book.getTitle());
+            bookAuthor.setText(book.getAuthor());
+            bookContent.setText(book.getContent());
+        }
 
 
     }
