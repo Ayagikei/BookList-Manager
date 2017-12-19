@@ -105,6 +105,10 @@ public class MainActivity extends AppCompatActivity
         BookAdapter bookAdapter = new BookAdapter(booklist,this);
         recyclerView.setAdapter(bookAdapter);
 
+        if(bookAdapter.getItemCount() == 0)
+            findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
+        else findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
+
     }
 
     @Override

@@ -1,11 +1,13 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import org.litepal.crud.DataSupport;
 
@@ -35,5 +37,16 @@ public class ScrollingActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        Intent intent = getIntent();
+        Book book = (Book) intent.getSerializableExtra("book");
+
+
+
+       TextView mContent = (TextView)findViewById(R.id.displayContent);
+
+       toolbar.setTitle(book.getTitle());
+       mContent.setText(book.getContent());
+
     }
 }

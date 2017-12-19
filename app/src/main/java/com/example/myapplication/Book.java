@@ -2,11 +2,13 @@ package com.example.myapplication;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.Serializable;
+
 /**
  * Created by hth on 2017/12/15 0015.
  */
 
-public class Book extends DataSupport{
+public class Book extends DataSupport implements Serializable {
     private int id;
     private String title;
     private String author;
