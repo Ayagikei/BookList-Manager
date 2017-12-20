@@ -5,6 +5,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +61,13 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             ActivityOptions option = ActivityOptions
                 .makeSceneTransitionAnimation((Activity) view.getContext(), contentTextView, "share_text");
             view.getContext().startActivity(intent, option.toBundle());
+        });
+
+        holder.container.setOnLongClickListener(view ->{
+            PopupMenu mPopupMenu = new PopupMenu(view.getContext(), view);
+            mPopupMenu.getMenuInflater().inflate(R.menu.item_select_menu,mPopupMenu.getMenu());
+            mPopupMenu.show();
+            return true;
         });
     }
 
