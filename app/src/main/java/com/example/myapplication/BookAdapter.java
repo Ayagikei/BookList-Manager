@@ -3,14 +3,17 @@ package com.example.myapplication;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -70,10 +73,24 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                 int title = menuItem.getItemId();
 
                 if(title == R.id.delete_item){
-                    book.delete();
-                    ((MainActivity)mContext) .refreshList();
-                    ((MainActivity)mContext) .scrollToPosition();
+
+
+
+                    new AlertDialog.Builder(mContext).setTitle("删除")
+                            .setMessage("你确定要删除该书籍吗？")
+                            .setPositiveButton("确定", (dialog, which) -> {
+                                // 点击“确认”后的操作
+                                book.delete();
+                                ((MainActivity)mContext) .refreshList();
+                                ((MainActivity)mContext) .scrollToPosition();
+                                Toast.makeText(mContext, "成功删除书籍",
+                                        Toast.LENGTH_SHORT).show();
+                            })
+                            .setNegativeButton("返回", (dialog, which) -> {
+                                // 点击“返回”后的操作,这里不设置没有任何操作
+                            }).show();
                 }
+
                 else if(title == R.id.edit_item){
                     Intent intent = new Intent(view.getContext(), BookAddActivity.class);
                     intent.putExtra("book",book.getId());
