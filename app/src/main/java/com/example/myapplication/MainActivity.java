@@ -47,8 +47,6 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
 
                 Intent intent = new Intent(view.getContext(), BookAddActivity.class);
                 startActivity(intent);
@@ -65,74 +63,26 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-//        mContainerView = (ViewGroup) findViewById(R.id.lineLayout);
-//
-//        if (mContainerView == null) {
-//            Log.w("WTF", "This is Warnning.");
-//        } else {
-//            Log.w("WTF", "not null");
-//
-//            //未来以下部分可改用ListView重写
-//            List<Book> books = DataSupport.findAll(Book.class);
-//
-//            for (Book book : books) {
-//
-//                //item增加
-//               ViewGroup newView = (ViewGroup) LayoutInflater.from(this).inflate(
-//                        R.layout.list_item_example, mContainerView, false);
-//
-//
-//
-//                ((TextView) newView.findViewById(R.id.titleText)).setText(book.getTitle());
-//                ((TextView) newView.findViewById(R.id.contentText)).setText(book.getContent());
-//
-//                newView.findViewById(R.id.itemLayout).setOnClickListener((v)-> {
-//                    contentText = ((ViewGroup) v).findViewById(R.id.contentText);
-//                    Intent intent = new Intent(this, ScrollingActivity.class);
-//                    ActivityOptions option = ActivityOptions
-//                            .makeSceneTransitionAnimation(this, contentText, "share_text");
-//                    startActivity(intent, option.toBundle());
-//                });
-//
-//                mContainerView.addView(newView, 0);
-//            }
-//
-//            findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
-//        }
-
-        List<Book> booklist = DataSupport.findAll(Book.class);
 
         recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        BookAdapter bookAdapter = new BookAdapter(booklist,this);
-        recyclerView.setAdapter(bookAdapter);
-
-        if(bookAdapter.getItemCount() == 0)
-            findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
-        else findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
+        refreshList();
 
     }
 
     @Override
     public void onNewIntent(Intent newIntent) {
         super.onNewIntent(newIntent);
+        refreshList();
 
-        //刷新书单
-        List<Book> booklist = DataSupport.findAll(Book.class);
-        BookAdapter bookAdapter = new BookAdapter(booklist,this);
-        recyclerView.setAdapter(bookAdapter);
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        //刷新书单
-        List<Book> booklist = DataSupport.findAll(Book.class);
-        BookAdapter bookAdapter = new BookAdapter(booklist,this);
-        recyclerView.setAdapter(bookAdapter);
+        refreshList();
     }
 
     @Override
@@ -244,5 +194,15 @@ public class MainActivity extends AppCompatActivity
     public void openAddBookView(View view) {
         Intent intent = new Intent(this, BookAddActivity.class);
         startActivity(intent);
+    }
+
+    public void refreshList(){
+        //刷新书单
+        List<Book> booklist = DataSupport.findAll(Book.class);
+        BookAdapter bookAdapter = new BookAdapter(booklist,this);
+        recyclerView.setAdapter(bookAdapter);
+        if(bookAdapter.getItemCount() == 0)
+            findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
+        else findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
     }
 }
