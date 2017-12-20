@@ -25,6 +25,7 @@ import android.widget.TextView;
 import org.litepal.crud.DataSupport;
 import org.litepal.tablemanager.Connector;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -212,6 +213,7 @@ public class MainActivity extends AppCompatActivity
     public void refreshList(){
         //刷新书单
         List<Book> booklist = DataSupport.findAll(Book.class);
+        Collections.reverse(booklist);
         BookAdapter bookAdapter = new BookAdapter(booklist,this);
         recyclerView.setAdapter(bookAdapter);
         if(bookAdapter.getItemCount() == 0)
