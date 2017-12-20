@@ -63,9 +63,23 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             view.getContext().startActivity(intent, option.toBundle());
         });
 
-        holder.container.setOnLongClickListener(view ->{
+        holder.container.setOnLongClickListener((View view) ->{
             PopupMenu mPopupMenu = new PopupMenu(view.getContext(), view);
             mPopupMenu.getMenuInflater().inflate(R.menu.item_select_menu,mPopupMenu.getMenu());
+            mPopupMenu.setOnMenuItemClickListener(menuItem ->{
+                int title = menuItem.getItemId();
+
+                if(title == R.id.delete_item){
+                    book.delete();
+                }
+                else if(title == R.id.edit_item){
+                    Intent intent = new Intent(view.getContext(), BookAddActivity.class);
+                    intent.putExtra("book",book.getId());
+                    view.getContext().startActivity(intent);
+                }
+
+                return true;
+            });
             mPopupMenu.show();
             return true;
         });
