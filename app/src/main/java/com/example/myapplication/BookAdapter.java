@@ -71,7 +71,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
                 if(title == R.id.delete_item){
                     book.delete();
-
+                    ((MainActivity)mContext) .refreshList();
                 }
                 else if(title == R.id.edit_item){
                     Intent intent = new Intent(view.getContext(), BookAddActivity.class);
