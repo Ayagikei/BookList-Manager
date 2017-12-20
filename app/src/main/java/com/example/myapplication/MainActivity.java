@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity
     public static final String EXTRA_MESSAGE = "com.example.MyApplication.MESSAGE";
     private TextView contentText;
     private RecyclerView recyclerView;
+    private int lastPosition = 0;
+    private int lastOffset = 0;
 
 
     @Override
@@ -69,20 +71,31 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setLayoutManager(layoutManager);
         refreshList();
 
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(recyclerView.getLayoutManager() != null) {
+                    getPositionAndOffset();
+                }
+            }
+        });
+
     }
 
     @Override
     public void onNewIntent(Intent newIntent) {
         super.onNewIntent(newIntent);
         refreshList();
-
-
+        scrollToPosition();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         refreshList();
+        scrollToPosition();
     }
 
     @Override
@@ -204,5 +217,29 @@ public class MainActivity extends AppCompatActivity
         if(bookAdapter.getItemCount() == 0)
             findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
         else findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * 记录RecyclerView当前位置
+     */
+    private void getPositionAndOffset() {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        //获取可视的第一个view
+        View topView = layoutManager.getChildAt(0);
+        if(topView != null) {
+            //获取与该view的顶部的偏移量
+            lastOffset = topView.getTop();
+            //得到该View的数组位置
+            lastPosition = layoutManager.getPosition(topView);
+        }
+    }
+
+    /**
+     * 让RecyclerView滚动到指定位置
+     */
+    public void scrollToPosition() {
+        if(recyclerView.getLayoutManager() != null && lastPosition >= 0) {
+            ((LinearLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(lastPosition, lastOffset);
+        }
     }
 }
