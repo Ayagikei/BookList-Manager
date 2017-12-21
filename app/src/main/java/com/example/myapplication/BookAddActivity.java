@@ -93,8 +93,11 @@ public class BookAddActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(this, ScrollingActivity.class);
-        intent.putExtra("book",book.getId());
-        startActivity(intent);
+
+        if(book != null) {
+            Intent intent = new Intent(this, ScrollingActivity.class);
+            intent.putExtra("book", book.getId());
+            startActivity(intent);
+        }
     }
 }
