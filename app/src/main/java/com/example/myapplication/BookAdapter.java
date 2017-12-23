@@ -9,6 +9,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by hth on 2017/12/18 0018.
@@ -75,24 +78,55 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+
+
+
         switch (getItemViewType(position)) {
 
-            //Header
+            //Header Item
             case 0:
+
+                //获取已选择项
+                int sortby =  ((MainActivity) mContext).getSortby();
+
+                switch (sortby) {
+                    case 0:holder.headerTextView.setText("按添加排序 ▼");
+                        break;
+                    case 1:holder.headerTextView.setText("按拼音顺序 ▼");
+                        break;
+                    case 2:holder.headerTextView.setText("按添加倒序排序 ▼");
+                        break;
+                }
+
                 holder.headerTextView.setOnClickListener(view -> {
                     PopupMenu mPopupMenu = new PopupMenu(view.getContext(), view);
                     mPopupMenu.getMenuInflater().inflate(R.menu.item_sortby_menu, mPopupMenu.getMenu());
+
+
+
+                    switch (sortby) {
+                        case 0:mPopupMenu.getMenu().findItem(R.id.item_sortby_id).setChecked(true);
+                            break;
+                        case 1:mPopupMenu.getMenu().findItem(R.id.item_sortby_abc).setChecked(true);
+                            break;
+                        case 2:mPopupMenu.getMenu().findItem(R.id.item_sortby_finishtime).setChecked(true);
+                            break;
+                    }
+
                     mPopupMenu.setOnMenuItemClickListener(menuItem -> {
                         int title = menuItem.getItemId();
-                        //item_sortby_id item_sortby_abc item_sortby_finishtime
+
                         switch(title){
-                            case R.id.item_sortby_id:
+                            case (R.id.item_sortby_id):
+                                ((MainActivity) mContext).setSortby(0);
                                 break;
 
-                            case R.id.item_sortby_abc:
+                            case (R.id.item_sortby_abc):
+                                ((MainActivity) mContext).setSortby(1);
                                 break;
 
-                            case R.id.item_sortby_finishtime:
+                            case (R.id.item_sortby_finishtime):
+                                ((MainActivity) mContext).setSortby(2);
                                 break;
                         }
 
@@ -104,10 +138,10 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                 });
                 break;
 
-            //Normal
+            //Normal Item
             case 1:
 
-                Book book = mBookList.get(position);
+                Book book = mBookList.get(position-1);
                 holder.titleTextView.setText(book.getTitle());
                 holder.contentTextView.setText(book.getContent());
 
@@ -160,7 +194,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return mBookList.size();
+        return mBookList.size()+1;
     }
 
     @Override

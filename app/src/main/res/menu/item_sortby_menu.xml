@@ -4,15 +4,14 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/item_sortby_id"
+            android:checked="true"
             android:title="按添加排序" />
 
         <item
             android:id="@+id/item_sortby_abc"
-            android:title="按拼音顺序"
-            />
+            android:title="按拼音顺序" />
         <item
             android:id="@+id/item_sortby_finishtime"
-            android:title="按完成时间排序"
-            />
+            android:title="按添加倒序排序" />
     </group>
 </menu>

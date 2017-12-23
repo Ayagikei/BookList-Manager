@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.litepal.crud.DataSupport;
 import org.litepal.tablemanager.Connector;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private int lastPosition = 0;
     private int lastOffset = 0;
+    private int sortby = 0;
 
 
     @Override
@@ -216,6 +218,26 @@ public class MainActivity extends AppCompatActivity
         Collections.reverse(booklist);
         BookAdapter bookAdapter = new BookAdapter(booklist,this);
         recyclerView.setAdapter(bookAdapter);
+        if(bookAdapter.getItemCount() == 1)
+            findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
+        else findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
+    }
+
+    public void refreshList(int i){
+        List<Book> booklist = null;
+        if(i == 0) {
+            booklist = DataSupport.select("title","author","content").order("id desc").find(Book.class);
+        }
+        else if(i == 1){
+        booklist = DataSupport.select("title","author","content").order("title COLLATE LOCALIZED ASC").find(Book.class);
+        }
+        else if(i == 2){
+            booklist = DataSupport.select("title","author","content").order("id asc").find(Book.class);
+        }
+
+
+        BookAdapter bookAdapter = new BookAdapter(booklist,this);
+        recyclerView.setAdapter(bookAdapter);
         if(bookAdapter.getItemCount() == 0)
             findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
         else findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
@@ -243,5 +265,14 @@ public class MainActivity extends AppCompatActivity
         if(recyclerView.getLayoutManager() != null && lastPosition >= 0) {
             ((LinearLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(lastPosition, lastOffset);
         }
+    }
+
+    public int getSortby(){
+        return sortby;
+    }
+
+    public void setSortby(int i) {
+        sortby = i;
+        refreshList(i);
     }
 }

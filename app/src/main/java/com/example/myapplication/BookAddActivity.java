@@ -30,7 +30,6 @@ public class BookAddActivity extends AppCompatActivity {
         //编辑的时候获取传递过来的book对象
         Intent intent = getIntent();
 
-
         int bookid = intent.getIntExtra("book",-1);
 
         if (bookid != -1) {
