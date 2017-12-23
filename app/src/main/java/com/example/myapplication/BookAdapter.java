@@ -22,6 +22,10 @@ import java.util.List;
  */
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
+
+    public static final int TYPE_HEADER = 0;
+    public static final int TYPE_NORMAL = 1;
+
     private List<Book> mBookList;
     Context mContext;
 
@@ -45,63 +49,85 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_example,parent,false);
-        ViewHolder holder = new ViewHolder(view);
+        View view = null;
+        ViewHolder holder = null;
+
+        switch(viewType) {
+
+            case 0:
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_item_header, parent, false);
+                holder = new ViewHolder(view);
+                break;
+
+            case 1:
+                view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.list_item_example, parent, false);
+                holder = new ViewHolder(view);
+                break;
+        }
         return holder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Book book = mBookList.get(position);
-        holder.titleTextView.setText(book.getTitle());
-        holder.contentTextView.setText(book.getContent());
+        switch (getItemViewType(position)) {
 
-        holder.container.setOnClickListener(view -> {
-            TextView contentTextView = ((ViewGroup) view).findViewById(R.id.contentText);
-            Intent intent = new Intent(view.getContext(), ScrollingActivity.class);
-            intent.putExtra("book",book.getId());
-            ActivityOptions option = ActivityOptions
-                .makeSceneTransitionAnimation((Activity) view.getContext(), contentTextView, "share_text");
-            view.getContext().startActivity(intent, option.toBundle());
-        });
+            //Header
+            case 0:
 
-        holder.container.setOnLongClickListener((View view) ->{
-            PopupMenu mPopupMenu = new PopupMenu(view.getContext(), view);
-            mPopupMenu.getMenuInflater().inflate(R.menu.item_select_menu,mPopupMenu.getMenu());
-            mPopupMenu.setOnMenuItemClickListener(menuItem ->{
-                int title = menuItem.getItemId();
+                break;
 
-                if(title == R.id.delete_item){
+            //Normal
+            case 1:
+
+                Book book = mBookList.get(position);
+                holder.titleTextView.setText(book.getTitle());
+                holder.contentTextView.setText(book.getContent());
+
+                holder.container.setOnClickListener(view -> {
+                    TextView contentTextView = ((ViewGroup) view).findViewById(R.id.contentText);
+                    Intent intent = new Intent(view.getContext(), ScrollingActivity.class);
+                    intent.putExtra("book", book.getId());
+                    ActivityOptions option = ActivityOptions
+                            .makeSceneTransitionAnimation((Activity) view.getContext(), contentTextView, "share_text");
+                    view.getContext().startActivity(intent, option.toBundle());
+                });
+
+                holder.container.setOnLongClickListener((View view) -> {
+                    PopupMenu mPopupMenu = new PopupMenu(view.getContext(), view);
+                    mPopupMenu.getMenuInflater().inflate(R.menu.item_select_menu, mPopupMenu.getMenu());
+                    mPopupMenu.setOnMenuItemClickListener(menuItem -> {
+                        int title = menuItem.getItemId();
+
+                        if (title == R.id.delete_item) {
 
 
+                            new AlertDialog.Builder(mContext).setTitle("删除")
+                                    .setMessage("你确定要删除该书籍吗？")
+                                    .setPositiveButton("确定", (dialog, which) -> {
+                                        // 点击“确认”后的操作
+                                        book.delete();
+                                        ((MainActivity) mContext).refreshList();
+                                        ((MainActivity) mContext).scrollToPosition();
+                                        Toast.makeText(mContext, "成功删除书籍",
+                                                Toast.LENGTH_SHORT).show();
+                                    })
+                                    .setNegativeButton("返回", (dialog, which) -> {
+                                        // 点击“返回”后的操作,这里不设置没有任何操作
+                                    }).show();
+                        } else if (title == R.id.edit_item) {
+                            Intent intent = new Intent(view.getContext(), BookAddActivity.class);
+                            intent.putExtra("book", book.getId());
+                            view.getContext().startActivity(intent);
+                        }
 
-                    new AlertDialog.Builder(mContext).setTitle("删除")
-                            .setMessage("你确定要删除该书籍吗？")
-                            .setPositiveButton("确定", (dialog, which) -> {
-                                // 点击“确认”后的操作
-                                book.delete();
-                                ((MainActivity)mContext) .refreshList();
-                                ((MainActivity)mContext) .scrollToPosition();
-                                Toast.makeText(mContext, "成功删除书籍",
-                                        Toast.LENGTH_SHORT).show();
-                            })
-                            .setNegativeButton("返回", (dialog, which) -> {
-                                // 点击“返回”后的操作,这里不设置没有任何操作
-                            }).show();
-                }
-
-                else if(title == R.id.edit_item){
-                    Intent intent = new Intent(view.getContext(), BookAddActivity.class);
-                    intent.putExtra("book",book.getId());
-                    view.getContext().startActivity(intent);
-                }
-
-                return true;
-            });
-            mPopupMenu.show();
-            return true;
-        });
+                        return true;
+                    });
+                    mPopupMenu.show();
+                    return true;
+                });
+        }
     }
 
     @Override
@@ -109,7 +135,10 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         return mBookList.size();
     }
 
-
-
-
+    @Override
+    public int getItemViewType(int position) {
+        if(position == 0)
+            return TYPE_HEADER;
+        else return TYPE_NORMAL;
+    }
 }
