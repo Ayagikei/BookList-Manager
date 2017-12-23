@@ -5,15 +5,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:id="@+id/sortby_text"
+        android:id="@+id/sortbyText"
         style="?android:textAppearanceSmall"
         android:layout_width="0dp"
-        android:layout_height="16dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:clickable="true"
         android:text="按XX排序 ▼"
         android:textAlignment="center"
         android:textColor="?android:textColorSecondary"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

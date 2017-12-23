@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 /**
@@ -30,12 +32,14 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     Context mContext;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView headerTextView;
         TextView titleTextView;
         TextView contentTextView;
         ConstraintLayout container;
 
         public ViewHolder(View view){
             super(view);
+            headerTextView = (TextView) view.findViewById(R.id.sortbyText);
             titleTextView = (TextView) view.findViewById(R.id.titleText);
             contentTextView = (TextView) view.findViewById(R.id.contentText);
             container = (ConstraintLayout) view.findViewById(R.id.itemLayout);
@@ -75,7 +79,29 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
             //Header
             case 0:
+                holder.headerTextView.setOnClickListener(view -> {
+                    PopupMenu mPopupMenu = new PopupMenu(view.getContext(), view);
+                    mPopupMenu.getMenuInflater().inflate(R.menu.item_sortby_menu, mPopupMenu.getMenu());
+                    mPopupMenu.setOnMenuItemClickListener(menuItem -> {
+                        int title = menuItem.getItemId();
+                        //item_sortby_id item_sortby_abc item_sortby_finishtime
+                        switch(title){
+                            case R.id.item_sortby_id:
+                                break;
 
+                            case R.id.item_sortby_abc:
+                                break;
+
+                            case R.id.item_sortby_finishtime:
+                                break;
+                        }
+
+                        return true;
+
+                    });
+                    mPopupMenu.show();
+
+                });
                 break;
 
             //Normal
@@ -127,7 +153,9 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                     mPopupMenu.show();
                     return true;
                 });
-        }
+
+                break;
+        } // End of switch
     }
 
     @Override
