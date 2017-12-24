@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -34,11 +35,15 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String EXTRA_MESSAGE = "com.example.MyApplication.MESSAGE";
+    public static final int SORTBY_ID = 0;
+    public static final int SORTBY_ABC = 1;
+    public static final int SORTBY_ID_DESC = 2;
+
     private TextView contentText;
     private RecyclerView recyclerView;
     private int lastPosition = 0;
     private int lastOffset = 0;
-    private int sortby = 0;
+    private int sortby = SORTBY_ID;
 
 
     @Override
@@ -47,6 +52,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //获取持久化保存的排序方法
+        SharedPreferences pref = getSharedPreferences("data",MODE_PRIVATE);
+        sortby = pref.getInt("sortby",SORTBY_ID);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -72,7 +81,7 @@ public class MainActivity extends AppCompatActivity
         recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        refreshList();
+        refreshList(sortby);
 
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -90,14 +99,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onNewIntent(Intent newIntent) {
         super.onNewIntent(newIntent);
-        refreshList();
+        refreshList(sortby);
         scrollToPosition();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        refreshList();
+        refreshList(sortby);
         scrollToPosition();
     }
 
@@ -272,6 +281,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void setSortby(int i) {
+        //持久化保存
+        SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+        editor.putInt("sortby",i);
+        editor.apply();
+
         sortby = i;
         refreshList(i);
     }
