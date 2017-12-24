@@ -3,6 +3,7 @@ package com.example.myapplication;
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by hth on 2017/12/15 0015.
@@ -13,6 +14,11 @@ public class Book extends DataSupport implements Serializable {
     private String title;
     private String author;
     private String content;
+    private Date finishDate;
+
+
+
+
 
     public int getId() {
         return id;
@@ -44,5 +50,13 @@ public class Book extends DataSupport implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Date getFinishDate() {
+        return finishDate;
+    }
+
+    public void setFinishDate(Date finishDate) {
+        this.finishDate = finishDate;
     }
 }
