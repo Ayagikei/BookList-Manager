@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity
     public static final int SORTBY_ID = 0;
     public static final int SORTBY_ABC = 1;
     public static final int SORTBY_ID_DESC = 2;
+    public static final int SORTBY_FINISHTIME = 3;
 
     private TextView contentText;
     private RecyclerView recyclerView;
@@ -235,15 +236,17 @@ public class MainActivity extends AppCompatActivity
     public void refreshList(int i){
         List<Book> booklist = null;
         if(i == 0) {
-            booklist = DataSupport.select("title","author","content").order("id desc").find(Book.class);
+            booklist = DataSupport.select("title","author","content","finishDate").order("id desc").find(Book.class);
         }
         else if(i == 1){
-        booklist = DataSupport.select("title","author","content").order("title COLLATE LOCALIZED ASC").find(Book.class);
+        booklist = DataSupport.select("title","author","content","finishDate").order("title COLLATE LOCALIZED ASC").find(Book.class);
         }
         else if(i == 2){
-            booklist = DataSupport.select("title","author","content").order("id asc").find(Book.class);
+            booklist = DataSupport.select("title","author","content","finishDate").order("id asc").find(Book.class);
         }
-
+        else if(i == 3){
+            booklist = DataSupport.select("title","author","content","finishDate").order("finishDate DESC").find(Book.class);
+        }
 
         BookAdapter bookAdapter = new BookAdapter(booklist,this);
         recyclerView.setAdapter(bookAdapter);

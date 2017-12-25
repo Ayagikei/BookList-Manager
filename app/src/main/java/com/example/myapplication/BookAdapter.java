@@ -96,6 +96,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                         break;
                     case 2:holder.headerTextView.setText("按添加倒序排序 ▼");
                         break;
+                    case 3:holder.headerTextView.setText("按完成时间排序 ▼");
+                        break;
                 }
 
                 holder.headerTextView.setOnClickListener(view -> {
@@ -109,8 +111,9 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                             break;
                         case 1:mPopupMenu.getMenu().findItem(R.id.item_sortby_abc).setChecked(true);
                             break;
-                        case 2:mPopupMenu.getMenu().findItem(R.id.item_sortby_finishtime).setChecked(true);
+                        case 2:mPopupMenu.getMenu().findItem(R.id.item_sortby_id_desc).setChecked(true);
                             break;
+                        case 3:mPopupMenu.getMenu().findItem(R.id.item_sortby_finishtime).setChecked(true);
                     }
 
                     mPopupMenu.setOnMenuItemClickListener(menuItem -> {
@@ -125,8 +128,11 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                                 ((MainActivity) mContext).setSortby(1);
                                 break;
 
-                            case (R.id.item_sortby_finishtime):
+                            case (R.id.item_sortby_id_desc):
                                 ((MainActivity) mContext).setSortby(2);
+                                break;
+                            case (R.id.item_sortby_finishtime):
+                                ((MainActivity) mContext).setSortby(3);
                                 break;
                         }
 
