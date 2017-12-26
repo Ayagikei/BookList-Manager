@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by hth on 2017/12/15 0015.
+ * Created by AyagiKei on 2017/12/15 0015.
  */
 
 public class Book extends DataSupport implements Serializable {

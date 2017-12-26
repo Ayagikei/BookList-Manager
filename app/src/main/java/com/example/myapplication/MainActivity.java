@@ -35,16 +35,19 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String EXTRA_MESSAGE = "com.example.MyApplication.MESSAGE";
-    public static final int SORTBY_ID = 0;
-    public static final int SORTBY_ABC = 1;
-    public static final int SORTBY_ID_DESC = 2;
-    public static final int SORTBY_FINISHTIME = 3;
+    public static final int SORTBY_ID_DESC = 0;
+    public static final int SORTBY_FINISHTIME = 1;
+    public static final int SORTBY_ABC = 2;
+    public static final int SORTBY_ID = 3;
+    public static final int SORTBY_FINISHTIME_DESC = 4;
+    public static final int SORTBY_ABC_DESC = 5;
+
 
     private TextView contentText;
     private RecyclerView recyclerView;
     private int lastPosition = 0;
     private int lastOffset = 0;
-    private int sortby = SORTBY_ID;
+    private int sortby = SORTBY_ID_DESC;
 
 
     @Override
@@ -233,19 +236,28 @@ public class MainActivity extends AppCompatActivity
         else findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
     }
 
-    public void refreshList(int i){
+    public void refreshList(int sortby){
+
+        //实现多种排序
         List<Book> booklist = null;
-        if(i == 0) {
-            booklist = DataSupport.select("title","author","content","finishDate").order("id desc").find(Book.class);
+
+        if(sortby == SORTBY_ID_DESC) {
+            booklist = DataSupport.select("title","author","content","finishDate").order("id DESC").find(Book.class);
         }
-        else if(i == 1){
-        booklist = DataSupport.select("title","author","content","finishDate").order("title COLLATE LOCALIZED ASC").find(Book.class);
+        else if(sortby == SORTBY_FINISHTIME){
+        booklist = DataSupport.select("title","author","content","finishDate").order("finishDate ASC").find(Book.class);
         }
-        else if(i == 2){
-            booklist = DataSupport.select("title","author","content","finishDate").order("id asc").find(Book.class);
+        else if(sortby == SORTBY_ABC){
+            booklist = DataSupport.select("title","author","content","finishDate").order("title COLLATE LOCALIZED ASC").find(Book.class);
         }
-        else if(i == 3){
+        else if(sortby == SORTBY_ID){
+            booklist = DataSupport.select("title","author","content","finishDate").order("id ASC").find(Book.class);
+        }
+        else if(sortby == SORTBY_FINISHTIME_DESC){
             booklist = DataSupport.select("title","author","content","finishDate").order("finishDate DESC").find(Book.class);
+        }
+        else if(sortby == SORTBY_ABC_DESC){
+            booklist = DataSupport.select("title","author","content","finishDate").order("title COLLATE LOCALIZED DESC").find(Book.class);
         }
 
         BookAdapter bookAdapter = new BookAdapter(booklist,this);
@@ -279,17 +291,19 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    //获取当前的排序方法
     public int getSortby(){
         return sortby;
     }
 
-    public void setSortby(int i) {
+    //设置新的排序方法
+    public void setSortby(int sortby) {
         //持久化保存
         SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
-        editor.putInt("sortby",i);
+        editor.putInt("sortby",sortby);
         editor.apply();
 
-        sortby = i;
-        refreshList(i);
+        this.sortby = sortby;
+        refreshList(sortby);
     }
 }

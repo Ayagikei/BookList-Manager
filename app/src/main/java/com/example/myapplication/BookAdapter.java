@@ -23,13 +23,20 @@ import java.util.List;
 import static android.content.ContentValues.TAG;
 
 /**
- * Created by hth on 2017/12/18 0018.
+ * Created by AyagiKei on 2017/12/18 0018.
  */
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_NORMAL = 1;
+
+    public static final int SORTBY_ID_DESC = 0;
+    public static final int SORTBY_FINISHTIME = 1;
+    public static final int SORTBY_ABC = 2;
+    public static final int SORTBY_ID = 3;
+    public static final int SORTBY_FINISHTIME_DESC = 4;
+    public static final int SORTBY_ABC_DESC = 5;
 
     private List<Book> mBookList;
     Context mContext;
@@ -61,13 +68,13 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
         switch(viewType) {
 
-            case 0:
+            case TYPE_HEADER:
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_header, parent, false);
                 holder = new ViewHolder(view);
                 break;
 
-            case 1:
+            case TYPE_NORMAL:
                 view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_item_example, parent, false);
                 holder = new ViewHolder(view);
@@ -84,19 +91,23 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         switch (getItemViewType(position)) {
 
             //Header Item
-            case 0:
+            case TYPE_HEADER:
 
                 //获取已选择项
                 int sortby =  ((MainActivity) mContext).getSortby();
 
                 switch (sortby) {
-                    case 0:holder.headerTextView.setText("按添加排序 ▼");
+                    case SORTBY_ID_DESC:holder.headerTextView.setText("按添加倒序 ▼");
                         break;
-                    case 1:holder.headerTextView.setText("按拼音顺序 ▼");
+                    case SORTBY_FINISHTIME:holder.headerTextView.setText("按完成时间排序 ▼");
                         break;
-                    case 2:holder.headerTextView.setText("按添加倒序排序 ▼");
+                    case SORTBY_ABC:holder.headerTextView.setText("按拼音排序 ▼");
                         break;
-                    case 3:holder.headerTextView.setText("按完成时间排序 ▼");
+                    case SORTBY_ID:holder.headerTextView.setText("按添加排序 ▼");
+                        break;
+                    case SORTBY_FINISHTIME_DESC:holder.headerTextView.setText("按完成时间倒序 ▼");
+                        break;
+                    case SORTBY_ABC_DESC:holder.headerTextView.setText("按拼音倒序 ▼");
                         break;
                 }
 
@@ -107,13 +118,18 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
 
                     switch (sortby) {
-                        case 0:mPopupMenu.getMenu().findItem(R.id.item_sortby_id).setChecked(true);
+                        case SORTBY_ID_DESC:mPopupMenu.getMenu().findItem(R.id.item_sortby_id).setChecked(true);
                             break;
-                        case 1:mPopupMenu.getMenu().findItem(R.id.item_sortby_abc).setChecked(true);
+                        case SORTBY_FINISHTIME:mPopupMenu.getMenu().findItem(R.id.item_sortby_finishtime).setChecked(true);
                             break;
-                        case 2:mPopupMenu.getMenu().findItem(R.id.item_sortby_id_desc).setChecked(true);
+                        case SORTBY_ABC:mPopupMenu.getMenu().findItem(R.id.item_sortby_abc).setChecked(true);
                             break;
-                        case 3:mPopupMenu.getMenu().findItem(R.id.item_sortby_finishtime).setChecked(true);
+                        case SORTBY_ID:mPopupMenu.getMenu().findItem(R.id.item_sortby_id).setChecked(true);
+                            break;
+                        case SORTBY_FINISHTIME_DESC:mPopupMenu.getMenu().findItem(R.id.item_sortby_finishtime).setChecked(true);
+                            break;
+                        case SORTBY_ABC_DESC:mPopupMenu.getMenu().findItem(R.id.item_sortby_abc).setChecked(true);
+                            break;
                     }
 
                     mPopupMenu.setOnMenuItemClickListener(menuItem -> {
@@ -121,19 +137,20 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
                         switch(title){
                             case (R.id.item_sortby_id):
-                                ((MainActivity) mContext).setSortby(0);
+                                if(((MainActivity) mContext).getSortby() == SORTBY_ID_DESC)  ((MainActivity) mContext).setSortby(SORTBY_ID);
+                                    else ((MainActivity) mContext).setSortby(SORTBY_ID_DESC);
+                                break;
+
+                            case (R.id.item_sortby_finishtime):
+                                if(((MainActivity) mContext).getSortby() == SORTBY_FINISHTIME)   ((MainActivity) mContext).setSortby(SORTBY_FINISHTIME_DESC);
+                                else ((MainActivity) mContext).setSortby(SORTBY_FINISHTIME);
                                 break;
 
                             case (R.id.item_sortby_abc):
-                                ((MainActivity) mContext).setSortby(1);
+                                if(((MainActivity) mContext).getSortby() == SORTBY_ABC)   ((MainActivity) mContext).setSortby(SORTBY_ABC_DESC);
+                                else ((MainActivity) mContext).setSortby(SORTBY_ABC);
                                 break;
 
-                            case (R.id.item_sortby_id_desc):
-                                ((MainActivity) mContext).setSortby(2);
-                                break;
-                            case (R.id.item_sortby_finishtime):
-                                ((MainActivity) mContext).setSortby(3);
-                                break;
                         }
 
                         return true;
@@ -145,7 +162,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                 break;
 
             //Normal Item
-            case 1:
+            case TYPE_NORMAL:
 
                 Book book = mBookList.get(position-1);
                 holder.titleTextView.setText(book.getTitle());
