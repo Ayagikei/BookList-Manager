@@ -235,13 +235,13 @@ public class MainActivity extends AppCompatActivity
     public void refreshList(int i){
         List<Book> booklist = null;
         if(i == 0) {
-            booklist = DataSupport.select("title","author","content").order("id desc").find(Book.class);
+            booklist = DataSupport.select("title","author","content","finishDate").order("id desc").find(Book.class);
         }
         else if(i == 1){
-        booklist = DataSupport.select("title","author","content").order("title COLLATE LOCALIZED ASC").find(Book.class);
+        booklist = DataSupport.select("title","author","content","finishDate").order("title COLLATE LOCALIZED ASC").find(Book.class);
         }
         else if(i == 2){
-            booklist = DataSupport.select("title","author","content").order("id asc").find(Book.class);
+            booklist = DataSupport.select("title","author","content","finishDate").order("id asc").find(Book.class);
         }
 
 

@@ -2,9 +2,13 @@ package com.example.myapplication;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.icu.text.DateFormat;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
@@ -13,11 +17,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -38,6 +47,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         TextView headerTextView;
         TextView titleTextView;
         TextView contentTextView;
+        TextView tw_hasFinished;
+        CheckBox cb_finish;
         ConstraintLayout container;
 
         public ViewHolder(View view){
@@ -45,6 +56,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             headerTextView = (TextView) view.findViewById(R.id.sortbyText);
             titleTextView = (TextView) view.findViewById(R.id.titleText);
             contentTextView = (TextView) view.findViewById(R.id.contentText);
+            tw_hasFinished = (TextView)view.findViewById(R.id.tw_hasFinished);
+            cb_finish = (CheckBox)view.findViewById(R.id.cb_finish);
             container = (ConstraintLayout) view.findViewById(R.id.itemLayout);
         }
     }
@@ -145,6 +158,16 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                 holder.titleTextView.setText(book.getTitle());
                 holder.contentTextView.setText(book.getContent());
 
+                if(book.getFinishDate() != null) {
+                    holder.cb_finish.setVisibility(View.GONE);
+                    holder.tw_hasFinished.setVisibility(View.VISIBLE);
+
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+
+                    holder.tw_hasFinished.setText("已完成\n" +
+                    dateFormat.format(book.getFinishDate()));
+                }
+
                 holder.container.setOnClickListener(view -> {
                     TextView contentTextView = ((ViewGroup) view).findViewById(R.id.contentText);
                     Intent intent = new Intent(view.getContext(), ScrollingActivity.class);
@@ -186,6 +209,54 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                     });
                     mPopupMenu.show();
                     return true;
+                });
+
+
+
+                //列表中阅读完成CheckBox的逻辑
+                holder.cb_finish.setOnCheckedChangeListener((compoundButton, b) -> {
+                    Calendar calendar = Calendar.getInstance();
+                    final DatePickerDialog datePicker = new DatePickerDialog(mContext, null,
+                            calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH),
+                            calendar.get(Calendar.DAY_OF_MONTH));
+                    datePicker.setCancelable(true);
+                    datePicker.setCanceledOnTouchOutside(true);
+                    datePicker.setButton(DialogInterface.BUTTON_POSITIVE, "确认",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //确定的逻辑代码在监听中实现
+                                    DatePicker picker = datePicker.getDatePicker();
+                                    int year = picker.getYear();
+                                    int monthOfYear = picker.getMonth()+1;
+                                    int dayOfMonth = picker.getDayOfMonth();
+
+                                    try{
+                                        DateFormat dateFormat1 = new SimpleDateFormat("yyyy 年 MM 月 dd 日 ");
+                                        Date date = dateFormat1.parse(String.valueOf(year) +" 年 " + String.valueOf(monthOfYear) + " 月 " + String.valueOf(dayOfMonth) + " 日 ");
+                                        book.setFinishDate(date);
+                                        book.save();
+                                        ((MainActivity) mContext).refreshList();
+                                        ((MainActivity) mContext).scrollToPosition();
+                                    }catch(ParseException pe){
+
+                                    }
+                                }
+                            });
+                    datePicker.setButton(DialogInterface.BUTTON_NEGATIVE, "未完成",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    book.setToDefault("finishDate");
+                                    book.updateAll("id = ?",String.valueOf(book.getId()));
+
+                                    ((MainActivity) mContext).refreshList();
+                                    ((MainActivity) mContext).scrollToPosition();
+                                }
+                            });
+
+                    datePicker.show();
                 });
 
                 break;

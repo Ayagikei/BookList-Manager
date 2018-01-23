@@ -60,7 +60,7 @@ public class BookAddActivity extends AppCompatActivity {
             DateFormat dateFormat = new SimpleDateFormat("yyyy 年 MM 月 dd 日");
             if(book.getFinishDate()!=null)
             finishTimeTextView.setText(dateFormat.format(book.getFinishDate()));
-
+            else finishTimeTextView.setText("阅读未完成");
         }else finishTimeTextView.setText("阅读未完成");
 
 
@@ -94,11 +94,15 @@ public class BookAddActivity extends AppCompatActivity {
             return;
         }
 
+
         book.setTitle(s_title);
         book.setAuthor(s_author);
         book.setContent(s_content);
-        book.setFinishDate(date);
-        book.save();
+        if(date == null)         book.setToDefault("finishDate");
+        else    book.setFinishDate(date);
+
+        if(book.isSaved())      book.updateAll("id = ?",String.valueOf(book.getId()));
+        else    book.save();
 
         if(isNewBook) {
             Toast.makeText(getApplicationContext(), "成功添加书籍",

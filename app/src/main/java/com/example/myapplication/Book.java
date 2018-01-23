@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
@@ -10,10 +11,13 @@ import java.util.Date;
  */
 
 public class Book extends DataSupport implements Serializable {
+    @Column(unique = true)
     private int id;
     private String title;
     private String author;
     private String content;
+
+    @Column(nullable = true)
     private Date finishDate;
 
 

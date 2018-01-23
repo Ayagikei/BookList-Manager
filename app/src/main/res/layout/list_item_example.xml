@@ -51,7 +51,7 @@
         <TextView
             android:id="@+id/titleText"
             style="?android:textAppearanceMedium"
-            android:layout_width="256dp"
+            android:layout_width="248dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:layout_marginTop="8dp"
@@ -67,7 +67,7 @@
         <!-- A button that, when pressed, will delete this list item row from its container. -->
         <TextView
             android:id="@+id/contentText"
-            android:layout_width="255dp"
+            android:layout_width="248dp"
             android:layout_height="37dp"
             android:layout_marginStart="2dp"
             android:layout_marginTop="2dp"
@@ -94,7 +94,31 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/titleText"
-            app:layout_constraintTop_toTopOf="parent" /> <!-- @string/action_remove_item -->
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <CheckBox
+            android:id="@+id/cb_finish"
+            style="@android:style/Widget.Holo.CompoundButton.CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tw_hasFinished"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="24dp"
+            android:text="已完成"
+            android:textAppearance="@style/TextAppearance.Design.Hint"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- @string/action_remove_item -->
 
     </android.support.constraint.ConstraintLayout>
 
