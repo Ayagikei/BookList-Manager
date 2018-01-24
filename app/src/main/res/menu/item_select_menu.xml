@@ -7,6 +7,14 @@
      />
 
     <item
+        android:id="@+id/hide_item"
+        android:title="隐藏"
+        />
+    <item
+        android:id="@+id/cancel_hide_item"
+        android:title="取消隐藏"
+        />
+    <item
         android:id="@+id/delete_item"
         android:title="删除"
      />

@@ -43,11 +43,17 @@ public class MainActivity extends AppCompatActivity
     public static final int SORTBY_ABC_DESC = 5;
 
 
+    public static final int CLASSBY_NORMAL = 0;
+    public static final int CLASSBY_HIDE = 1;
+    public static final int CLASSBY_FINISHED = 2;
+    public static final int CLASSBY_UNFINISHED = 3;
+
     private TextView contentText;
     private RecyclerView recyclerView;
     private int lastPosition = 0;
     private int lastOffset = 0;
     private int sortby = SORTBY_ID_DESC;
+    private int classby = CLASSBY_NORMAL;
 
 
     @Override
@@ -61,6 +67,7 @@ public class MainActivity extends AppCompatActivity
         //获取持久化保存的排序方法
         SharedPreferences pref = getSharedPreferences("data",MODE_PRIVATE);
         sortby = pref.getInt("sortby",SORTBY_ID);
+        classby = pref.getInt("classby",CLASSBY_NORMAL);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +93,7 @@ public class MainActivity extends AppCompatActivity
         recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        refreshList(sortby);
+        refreshList(sortby,classby);
 
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -104,14 +111,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onNewIntent(Intent newIntent) {
         super.onNewIntent(newIntent);
-        refreshList(sortby);
+        refreshList(sortby,classby);
         scrollToPosition();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        refreshList(sortby);
+        refreshList(sortby,classby);
         scrollToPosition();
     }
 
@@ -237,29 +244,43 @@ public class MainActivity extends AppCompatActivity
         else findViewById(android.R.id.empty).setVisibility(View.INVISIBLE);
     }
 
-    public void refreshList(int sortby){
 
-        //实现多种排序
+    public void refreshList(int i,int i_bookClass){
+		//实现多种排序
         List<Book> booklist = null;
 
+        String s_bookClass = null;
+
+        if(i_bookClass==0){
+            s_bookClass = "bookClass = 0";
+        }
+        else if(i_bookClass==1){
+            s_bookClass = "bookClass = 1";
+        }
+        else if(i_bookClass==2){
+            s_bookClass = "finishDate IS NOT NULL AND bookClass = 0";
+        }else if(i_bookClass==3){
+            s_bookClass = "finishDate IS NULL AND bookClass = 0";
+        }
+
         if(sortby == SORTBY_ID_DESC) {
-            booklist = DataSupport.select("title","author","content","finishDate").order("id DESC").find(Book.class);
+            booklist = DataSupport.select("title","author","content","finishDate").order("id DESC").where(s_bookClass).find(Book.class);
         }
         else if(sortby == SORTBY_FINISHTIME){
-        booklist = DataSupport.select("title","author","content","finishDate").order("finishDate ASC").find(Book.class);
+        booklist = DataSupport.select("title","author","content","finishDate").order("finishDate ASC").where(s_bookClass).find(Book.class);
         }
         else if(sortby == SORTBY_ABC){
-            booklist = DataSupport.select("title","author","content","finishDate").order("title COLLATE LOCALIZED ASC").find(Book.class);
+            booklist = DataSupport.select("title","author","content","finishDate").order("title COLLATE LOCALIZED ASC").where(s_bookClass).find(Book.class);
         }
         else if(sortby == SORTBY_ID){
-            booklist = DataSupport.select("title","author","content","finishDate").order("id ASC").find(Book.class);
+            booklist = DataSupport.select("title","author","content","finishDate").order("id ASC").where(s_bookClass).find(Book.class);
         }
         else if(sortby == SORTBY_FINISHTIME_DESC){
-            booklist = DataSupport.select("title","author","content","finishDate").order("finishDate DESC").find(Book.class);
+            booklist = DataSupport.select("title","author","content","finishDate").order("finishDate DESC").where(s_bookClass).find(Book.class);
         }
         else if(sortby == SORTBY_ABC_DESC){
-            booklist = DataSupport.select("title","author","content","finishDate").order("title COLLATE LOCALIZED DESC").find(Book.class);
-        }
+            booklist = DataSupport.select("title","author","content","finishDate").order("title COLLATE LOCALIZED DESC").where(s_bookClass).find(Book.class);
+		}
 
         BookAdapter bookAdapter = new BookAdapter(booklist,this);
         recyclerView.setAdapter(bookAdapter);
@@ -305,6 +326,20 @@ public class MainActivity extends AppCompatActivity
         editor.apply();
 
         this.sortby = sortby;
-        refreshList(sortby);
+        refreshList(i,classby);
+    }
+
+    public int getClassby(){
+        return classby;
+    }
+
+    public void setClassBy(int i) {
+        //持久化保存
+        SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+        editor.putInt("classby",i);
+        editor.apply();
+
+        classby = i;
+        refreshList(sortby,i);
     }
 }
