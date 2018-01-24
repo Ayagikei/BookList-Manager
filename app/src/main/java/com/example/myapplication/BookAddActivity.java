@@ -98,8 +98,13 @@ public class BookAddActivity extends AppCompatActivity {
         book.setTitle(s_title);
         book.setAuthor(s_author);
         book.setContent(s_content);
-        if(date == null)         book.setToDefault("finishDate");
-        else    book.setFinishDate(date);
+        book.setBookClass(0);
+        if(date == null) {
+            book.setToDefault("finishDate");
+        }
+        else {
+            book.setFinishDate(date);
+        }
 
         if(book.isSaved())      book.updateAll("id = ?",String.valueOf(book.getId()));
         else    book.save();

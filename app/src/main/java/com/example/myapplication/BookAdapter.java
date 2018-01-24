@@ -45,6 +45,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView headerTextView;
+        TextView headerClassTextView;
         TextView titleTextView;
         TextView contentTextView;
         TextView tw_hasFinished;
@@ -54,6 +55,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         public ViewHolder(View view){
             super(view);
             headerTextView = (TextView) view.findViewById(R.id.sortbyText);
+            headerClassTextView= (TextView) view.findViewById(R.id.classbyText);
             titleTextView = (TextView) view.findViewById(R.id.titleText);
             contentTextView = (TextView) view.findViewById(R.id.contentText);
             tw_hasFinished = (TextView)view.findViewById(R.id.tw_hasFinished);
@@ -101,6 +103,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
                 //获取已选择项
                 int sortby =  ((MainActivity) mContext).getSortby();
+                int classby =  ((MainActivity) mContext).getClassby();
 
                 switch (sortby) {
                     case 0:holder.headerTextView.setText("按添加排序 ▼");
@@ -108,6 +111,17 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                     case 1:holder.headerTextView.setText("按拼音顺序 ▼");
                         break;
                     case 2:holder.headerTextView.setText("按添加倒序排序 ▼");
+                        break;
+                }
+
+                switch (classby) {
+                    case 0:holder.headerClassTextView.setText("所有书籍 ▼");
+                        break;
+                    case 1:holder.headerClassTextView.setText("隐藏书籍 ▼");
+                        break;
+                    case 2:holder.headerClassTextView.setText("已完成书籍 ▼");
+                        break;
+                    case 3:holder.headerClassTextView.setText("未完成书籍 ▼");
                         break;
                 }
 
@@ -148,6 +162,51 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                     });
                     mPopupMenu.show();
 
+                 });
+
+                holder.headerClassTextView.setOnClickListener(view -> {
+                    PopupMenu mPopupMenu = new PopupMenu(view.getContext(), view);
+                    mPopupMenu.getMenuInflater().inflate(R.menu.item_classby_menu, mPopupMenu.getMenu());
+
+
+
+                    switch (classby) {
+                        case 0:mPopupMenu.getMenu().findItem(R.id.item_classby_normal).setChecked(true);
+                            break;
+                        case 1:mPopupMenu.getMenu().findItem(R.id.item_classby_hide).setChecked(true);
+                            break;
+                        case 2:mPopupMenu.getMenu().findItem(R.id.item_classby_finished).setChecked(true);
+                            break;
+                        case 3:mPopupMenu.getMenu().findItem(R.id.item_classby_unfinished).setChecked(true);
+                            break;
+                    }
+
+                    mPopupMenu.setOnMenuItemClickListener(menuItem -> {
+                        int title = menuItem.getItemId();
+
+                        switch(title){
+                            case (R.id.item_classby_normal):
+                                ((MainActivity) mContext).setClassBy(0);
+                                break;
+
+                            case (R.id.item_classby_hide):
+                                ((MainActivity) mContext).setClassBy(1);
+                                break;
+
+                            case (R.id.item_classby_finished):
+                                ((MainActivity) mContext).setClassBy(2);
+                                break;
+
+                            case (R.id.item_classby_unfinished):
+                                ((MainActivity) mContext).setClassBy(3);
+                                break;
+                        }
+
+                        return true;
+
+                    });
+                    mPopupMenu.show();
+
                 });
                 break;
 
@@ -180,11 +239,17 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                 holder.container.setOnLongClickListener((View view) -> {
                     PopupMenu mPopupMenu = new PopupMenu(view.getContext(), view);
                     mPopupMenu.getMenuInflater().inflate(R.menu.item_select_menu, mPopupMenu.getMenu());
+
+                    if(book.getBookClass() == 0){
+                        mPopupMenu.getMenu().findItem(R.id.cancel_hide_item).setVisible(false);
+                    }else {
+                        mPopupMenu.getMenu().findItem(R.id.hide_item).setVisible(false);
+                    }
+
                     mPopupMenu.setOnMenuItemClickListener(menuItem -> {
                         int title = menuItem.getItemId();
 
                         if (title == R.id.delete_item) {
-
 
                             new AlertDialog.Builder(mContext).setTitle("删除")
                                     .setMessage("你确定要删除该书籍吗？")
@@ -203,6 +268,20 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                             Intent intent = new Intent(view.getContext(), BookAddActivity.class);
                             intent.putExtra("book", book.getId());
                             view.getContext().startActivity(intent);
+                        } else if (title == R.id.hide_item){
+                            book.setBookClass(1);
+                            book.save();
+                            ((MainActivity) mContext).refreshList();
+                            ((MainActivity) mContext).scrollToPosition();
+                            Toast.makeText(mContext, "成功设为隐藏",
+                                    Toast.LENGTH_SHORT).show();
+                        } else if (title == R.id.cancel_hide_item){
+                            book.setBookClass(0);
+                            book.save();
+                            ((MainActivity) mContext).refreshList();
+                            ((MainActivity) mContext).scrollToPosition();
+                            Toast.makeText(mContext, "成功取消隐藏",
+                                    Toast.LENGTH_SHORT).show();
                         }
 
                         return true;
